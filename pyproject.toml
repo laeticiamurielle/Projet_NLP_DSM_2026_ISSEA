@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "src"
+name = "audit_snd30"
 version = "1.0.0"
 description = "Audit sémantique et classification budgétaire des Lois de Finances camerounaises via CamemBERT — alignement SND30"
 authors = ["ISSEA ISE3-DS <mbialaura12@gmail.com>"]
@@ -9,7 +9,7 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Programming Language :: Python :: 3.11",
 ]
-packages = [{ include = "audit_snd30" }]
+packages = [{ include = "src" }]
 
 
 [tool.poetry.dependencies]
