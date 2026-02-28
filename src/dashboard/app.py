@@ -23,9 +23,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
-from audit_snd30.analysis.alignement import test_alignement
-from audit_snd30.analysis.glissement import calculer_glissement
-from audit_snd30.config import (
+from src.analysis.alignement import test_alignement
+from src.analysis.glissement import calculer_glissement
+from src.config import (
     CIBLES_SND30,
     COULEUR_2024,
     COULEUR_2025,
@@ -34,7 +34,7 @@ from audit_snd30.config import (
     PROC_DIR,
     MODEL_DIR,
 )
-from audit_snd30.nlp.classification import predire, zero_shot
+from src.nlp.classification import predire, zero_shot
 
 # ── Configuration page ────────────────────────────────────────────────────────
 st.set_page_config(page_title="Baromètre SND30", page_icon="📊", layout="wide")

@@ -12,9 +12,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from audit_snd30.config import PILIERS, CIBLES_SND30
-from audit_snd30.analysis.glissement import calculer_glissement
-from audit_snd30.analysis.alignement import test_alignement
+from src.config import PILIERS, CIBLES_SND30
+from src.analysis.glissement import calculer_glissement
+from src.analysis.alignement import test_alignement
 
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
@@ -139,19 +139,19 @@ class TestAlignement:
 class TestExtractionBase:
 
     def test_parse_amount_simple(self):
-        from audit_snd30.extraction.base import parse_amount
+        from src.extraction.base import parse_amount
         assert parse_amount(["1", "234", "567"]) == 1234567
 
     def test_parse_amount_none_si_vide(self):
-        from audit_snd30.extraction.base import parse_amount
+        from src.extraction.base import parse_amount
         assert parse_amount([]) is None
 
     def test_clean_lib_supprime_espaces_multiples(self):
-        from audit_snd30.extraction.base import clean_lib
+        from src.extraction.base import clean_lib
         result = clean_lib("PROGRAMME   DE   DÉVELOPPEMENT")
         assert "  " not in result
 
     def test_clean_ocr_corrige_artefacts(self):
-        from audit_snd30.extraction.base import clean_ocr
+        from src.extraction.base import clean_ocr
         assert "COORDINATION" in clean_ocr("COwORDINATION DES ACTIONS")
         assert "MULTILATÉRALE" in clean_ocr("MULTJLATERALE COOPERATION")

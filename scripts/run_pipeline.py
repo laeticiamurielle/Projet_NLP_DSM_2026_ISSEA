@@ -18,12 +18,12 @@ from pathlib import Path
 
 import pandas as pd
 
-from audit_snd30.config import PROC_DIR, MODEL_DIR, FNAME_2024_RAW, FNAME_2025_RAW
-from audit_snd30.extraction.lf_2024 import extraire_lf2024
-from audit_snd30.extraction.lf_2025 import extraire_lf2025
-from audit_snd30.nlp.classification import fine_tuner, predire, zero_shot
-from audit_snd30.analysis.glissement import calculer_glissement
-from audit_snd30.analysis.alignement import test_alignement
+from src.config import PROC_DIR, MODEL_DIR, FNAME_2024_RAW, FNAME_2025_RAW
+from src.extraction.lf_2024 import extraire_lf2024
+from src.extraction.lf_2025 import extraire_lf2025
+from src.nlp.classification import fine_tuner, predire, zero_shot
+from src.analysis.glissement import calculer_glissement
+from src.analysis.alignement import test_alignement
 
 
 def main():

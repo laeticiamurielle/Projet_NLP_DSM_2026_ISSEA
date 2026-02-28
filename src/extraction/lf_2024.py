@@ -15,7 +15,7 @@ from pathlib import Path
 import pandas as pd
 import pdfplumber
 
-from audit_snd30.config import LF2024, PROC_DIR, FNAME_2024_RAW
+from src.config import LF2024, PROC_DIR, FNAME_2024_RAW
 from .base import clean_lib, digs, parse_amount, export_excel_formate
 
 

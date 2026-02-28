@@ -19,7 +19,7 @@ from scipy.spatial.distance import jensenshannon
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-from audit_snd30.config import PILIERS
+from src.config import PILIERS
 
 
 def _distribution(df: pd.DataFrame) -> np.ndarray:

@@ -1,11 +1,9 @@
 [tool.poetry]
-name = "audit-snd30"
+name = "src"
 version = "1.0.0"
 description = "Audit sémantique et classification budgétaire des Lois de Finances camerounaises via CamemBERT — alignement SND30"
 authors = ["ISSEA ISE3-DS <mbialaura12@gmail.com>"]
 readme = "README.md"
-license = "MIT"
-keywords = ["NLP", "CamemBERT", "budget", "Cameroun", "SND30", "transformers"]
 classifiers = [
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Intended Audience :: Science/Research",
