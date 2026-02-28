@@ -1,12 +1,12 @@
 """
 audit_snd30.extraction.lf_2024
 ===============================
-Extracteur des lignes budgétaires depuis la Loi de Finances 2023-2024 (PDF MINFI).
+Extracteur des lignes budgétaires depuis le PDF "LOI DES FINANCES 2023-2024.pdf" (MINFI).
 
 Usage
 -----
     from audit_snd30.extraction.lf_2024 import extraire_lf2024
-    df = extraire_lf2024("/chemin/vers/LF_2023-2024.pdf")
+    df = extraire_lf2024("data/raw/LOI DES FINANCES 2023-2024.pdf")
 """
 
 import re
@@ -164,7 +164,7 @@ def _clean_df(df: pd.DataFrame) -> pd.DataFrame:
 # ── Fonction principale exportée ──────────────────────────────────────────────
 def extraire_lf2024(pdf_path: str, out_dir: Path = PROC_DIR) -> pd.DataFrame:
     """
-    Extrait toutes les lignes budgétaires de la LF 2023-2024.
+    Extrait toutes les lignes budgétaires du PDF "LOI DES FINANCES 2023-2024.pdf".
 
     Paramètres
     ----------

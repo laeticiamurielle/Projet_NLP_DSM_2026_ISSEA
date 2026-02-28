@@ -5,9 +5,9 @@ Pipeline complet : extraction → classification → analyse → export.
 
 Usage
 -----
-    poetry run python scripts/run_pipeline.py \\
-        --pdf-2024 /chemin/LF_2023-2024.pdf \\
-        --pdf-2025 /chemin/LF_2024-2025.pdf
+    poetry run python scripts/run_pipeline.py \
+        --pdf-2024 data/raw/LOI DES FINANCES 2023-2024.pdf \
+        --pdf-2025 data/raw/LOI DES FINANCES 2024-2025.pdf
 
     # Ou si les données sont déjà extraites (CSV/Excel) :
     poetry run python scripts/run_pipeline.py --skip-extraction
@@ -29,9 +29,9 @@ from audit_snd30.analysis.alignement import test_alignement
 def main():
     parser = argparse.ArgumentParser(description="Pipeline NLP SND30 complet")
     parser.add_argument("--pdf-2024", type=Path, default=None,
-                        help="Chemin vers le PDF LF 2023-2024 (défaut: data/raw/LOI DES FINANCES 2023-2024.pdf)")
+                        help="Chemin vers le PDF LOI DES FINANCES 2023-2024.pdf (défaut: data/raw/LOI DES FINANCES 2023-2024.pdf)")
     parser.add_argument("--pdf-2025", type=Path, default=None,
-                        help="Chemin vers le PDF LF 2024-2025 (défaut: data/raw/LOI DES FINANCES 2024-2025.pdf)")
+                        help="Chemin vers le PDF LOI DES FINANCES 2024-2025.pdf (défaut: data/raw/LOI DES FINANCES 2024-2025.pdf)")
     parser.add_argument("--skip-extraction", action="store_true",
                         help="Sauter l'extraction si les CSV/Excel existent déjà")
     parser.add_argument("--skip-finetuning", action="store_true",

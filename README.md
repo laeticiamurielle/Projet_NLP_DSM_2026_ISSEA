@@ -19,8 +19,8 @@ audit_snd30/
 │   │
 │   ├── extraction/                 # 📄 Étape 1 : Extraction PDF
 │   │   ├── base.py                 #    Utilitaires partagés (OCR, parse_amount, export Excel)
-│   │   ├── lf_2024.py              #    Extracteur LF 2023-2024
-│   │   └── lf_2025.py              #    Extracteur LF 2024-2025
+│   │   ├── lf_2024.py              #    Extracteur LOI DES FINANCES 2023-2024
+│   │   └── lf_2025.py              #    Extracteur LOI DES FINANCES 2024-2025
 │   │
 │   ├── nlp/                        # 🤖 Étape 2 : Classification NLP
 │   │   └── classification.py       #    Zero-shot · Fine-tuning · Prédiction (CamemBERT)
@@ -72,9 +72,9 @@ poetry shell
 
 ```bash
 # Avec les PDFs du MINFI
-poetry run python scripts/run_pipeline.py \
-    --pdf-2024 /chemin/vers/LF_2023-2024.pdf \
-    --pdf-2025 /chemin/vers/LF_2024-2025.pdf
+   poetry run python scripts/run_pipeline.py \
+      --pdf-2024 data/raw/LOI DES FINANCES 2023-2024.pdf \
+      --pdf-2025 data/raw/LOI DES FINANCES 2024-2025.pdf
 
 # Si l'extraction a déjà été faite (données dans data/processed/)
 poetry run python scripts/run_pipeline.py --skip-extraction
@@ -87,8 +87,8 @@ poetry run python scripts/run_pipeline.py --skip-extraction --skip-finetuning
 
 ```bash
 # Commande enregistrée par Poetry
-snd30-extract --lf 2024 --pdf /chemin/LF_2023-2024.pdf
-snd30-extract --lf 2025 --pdf /chemin/LF_2024-2025.pdf
+snd30-extract --lf 2024 --pdf data/raw/LOI DES FINANCES 2023-2024.pdf
+snd30-extract --lf 2025 --pdf data/raw/LOI DES FINANCES 2024-2025.pdf
 ```
 
 ### 3. Dashboard interactif
