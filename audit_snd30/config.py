@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Final
 
 # ── Racine du projet ──────────────────────────────────────────────────────────
-ROOT_DIR: Final[Path] = Path(__file__).parent.parent
+ROOT_DIR: Final[Path] = Path(__file__).resolve().parents[2]
 DATA_DIR: Final[Path] = ROOT_DIR / "data"
 RAW_DIR:  Final[Path] = DATA_DIR / "raw"
 PROC_DIR: Final[Path] = DATA_DIR / "processed"
