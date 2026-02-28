@@ -58,6 +58,10 @@ def main():
         pdf_2024 = args.pdf_2024 if args.pdf_2024 is not None else PDF_2024
         pdf_2025 = args.pdf_2025 if args.pdf_2025 is not None else PDF_2025
         if not Path(pdf_2024).exists() or not Path(pdf_2025).exists():
+            import os
+            print(f"[DEBUG] Chemin courant: {os.getcwd()}")
+            print(f"[DEBUG] pdf_2024 attendu: {pdf_2024}")
+            print(f"[DEBUG] pdf_2025 attendu: {pdf_2025}")
             raise ValueError(
                 f"Fichier PDF introuvable : {pdf_2024 if not Path(pdf_2024).exists() else pdf_2025}\n"
                 "Vérifiez que les fichiers sont bien placés dans data/raw/ ou fournissez le chemin avec --pdf-2024 et --pdf-2025."

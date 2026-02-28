@@ -5,11 +5,25 @@ Point unique de configuration du projet.
 Toutes les constantes et chemins sont définis ici.
 """
 
+
 from pathlib import Path
 from typing import Final
+import os
 
-# ── Racine du projet ──────────────────────────────────────────────────────────
-ROOT_DIR: Final[Path] = Path(__file__).resolve().parents[2]
+# Recherche robuste de la racine du projet (présence de pyproject.toml)
+def find_project_root():
+    candidates = [
+        Path.cwd(),
+        Path(__file__).resolve().parent,
+        Path(__file__).resolve().parent.parent,
+        Path(__file__).resolve().parent.parent.parent,
+    ]
+    for candidate in candidates:
+        if (candidate / "pyproject.toml").exists():
+            return candidate
+    return Path(__file__).resolve().parents[2]
+
+ROOT_DIR: Final[Path] = find_project_root()
 DATA_DIR: Final[Path] = ROOT_DIR / "data"
 RAW_DIR:  Final[Path] = DATA_DIR / "raw"
 PROC_DIR: Final[Path] = DATA_DIR / "processed"
