@@ -1,0 +1,62 @@
+[tool.poetry]
+name = "audit-snd30"
+version = "1.0.0"
+description = "Audit sémantique et classification budgétaire des Lois de Finances camerounaises via CamemBERT — alignement SND30"
+authors = ["ISSEA ISE3-DS <mbialaura12@gmail.com>"]
+readme = "README.md"
+license = "MIT"
+keywords = ["NLP", "CamemBERT", "budget", "Cameroun", "SND30", "transformers"]
+classifiers = [
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3.11",
+]
+packages = [{ include = "audit_snd30" }]
+
+[tool.poetry.dependencies]
+python              = ">=3.10,<3.12"
+transformers        = "==4.40.0"
+torch               = "==2.2.0"
+datasets            = "==2.19.0"
+scikit-learn        = "==1.4.2"
+pandas              = "==2.2.2"
+numpy               = "==1.26.4"
+streamlit           = "==1.35.0"
+plotly              = "==5.22.0"
+scipy               = "==1.13.0"
+openpyxl            = "==3.1.2"
+tqdm                = "==4.66.4"
+sentencepiece       = "==0.2.0"
+pdfplumber          = ">=0.11.0"
+python-dotenv       = ">=1.0.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest          = ">=8.0"
+pytest-cov      = ">=5.0"
+black           = ">=24.0"
+ruff            = ">=0.4"
+ipykernel       = ">=6.0"
+jupyterlab      = ">=4.0"
+
+[tool.poetry.scripts]
+# Commandes CLI disponibles après `poetry install`
+snd30-extract   = "audit_snd30.extraction:main_cli"
+snd30-pipeline  = "scripts.run_pipeline:main"
+snd30-dashboard = "scripts.run_dashboard:main"
+
+[tool.black]
+line-length    = 100
+target-version = ["py310", "py311"]
+
+[tool.ruff]
+line-length = 100
+select      = ["E", "F", "W", "I"]
+ignore      = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts   = "-v --tb=short --cov=audit_snd30 --cov-report=term-missing"
+
+[build-system]
+requires      = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

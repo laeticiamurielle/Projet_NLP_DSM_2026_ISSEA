@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Poetry / environnements virtuels
+.venv/
+venv/
+.python-version
+
+# Données brutes (PDFs confidentiels MINFI)
+data/raw/*.pdf
+data/raw/*.PDF
+
+# Modèle fine-tuné (lourd, géré par Git LFS si besoin)
+modele_snd30/
+*.bin
+*.safetensors
+*.pt
+
+# Données classifiées (générées automatiquement)
+data/processed/df_*_classifie.xlsx
+data/processed/df_*_classifie.csv
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Rapports de couverture
+htmlcov/
+.coverage
+coverage.xml
