@@ -28,7 +28,7 @@ def main_cli() -> None:
                         help="Dossier de sortie (défaut: data/processed/)")
     args = parser.parse_args()
 
-    from src.config import PROC_DIR
+    from audit_snd30.config import PROC_DIR
 
     out_dir = args.out or PROC_DIR
     out_dir.mkdir(parents=True, exist_ok=True)

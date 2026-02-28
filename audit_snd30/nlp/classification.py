@@ -30,7 +30,7 @@ from transformers import (
 )
 from datasets import Dataset
 
-from src.config import (
+from audit_snd30.config import (
     PILIERS, LABEL2ID, ID2LABEL,
     ZEROSHOT_MODEL, FINETUNE_MODEL, NLI_TEMPLATE, MODEL_DIR,
     MAX_LEN, TRAIN_EPOCHS, BATCH_SIZE, LEARNING_RATE,

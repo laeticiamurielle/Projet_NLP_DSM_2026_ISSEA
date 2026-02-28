@@ -21,7 +21,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import chisquare
 
-from src.config import PILIERS, CIBLES_SND30
+from audit_snd30.config import PILIERS, CIBLES_SND30
 
 
 def test_alignement(
