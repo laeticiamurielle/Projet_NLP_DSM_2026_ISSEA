@@ -18,7 +18,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from audit_snd30.config import PROC_DIR, MODEL_DIR, FNAME_2024_RAW, FNAME_2025_RAW
+from audit_snd30.config import PROC_DIR, MODEL_DIR, FNAME_2024_RAW, FNAME_2025_RAW, PDF_2024, PDF_2025
 from audit_snd30.extraction.lf_2024 import extraire_lf2024
 from audit_snd30.extraction.lf_2025 import extraire_lf2025
 from audit_snd30.nlp.classification import fine_tuner, predire, zero_shot
@@ -29,9 +29,9 @@ from audit_snd30.analysis.alignement import test_alignement
 def main():
     parser = argparse.ArgumentParser(description="Pipeline NLP SND30 complet")
     parser.add_argument("--pdf-2024", type=Path, default=None,
-                        help="Chemin vers le PDF LF 2023-2024")
+                        help="Chemin vers le PDF LF 2023-2024 (défaut: data/raw/LOI DES FINANCES 2023-2024.pdf)")
     parser.add_argument("--pdf-2025", type=Path, default=None,
-                        help="Chemin vers le PDF LF 2024-2025")
+                        help="Chemin vers le PDF LF 2024-2025 (défaut: data/raw/LOI DES FINANCES 2024-2025.pdf)")
     parser.add_argument("--skip-extraction", action="store_true",
                         help="Sauter l'extraction si les CSV/Excel existent déjà")
     parser.add_argument("--skip-finetuning", action="store_true",
@@ -54,13 +54,16 @@ def main():
         df_2024 = pd.read_excel(str(p24_xlsx))
         df_2025 = pd.read_excel(str(p25_xlsx))
     else:
-        if args.pdf_2024 is None or args.pdf_2025 is None:
+        # Utiliser les chemins par défaut si non fournis
+        pdf_2024 = args.pdf_2024 if args.pdf_2024 is not None else PDF_2024
+        pdf_2025 = args.pdf_2025 if args.pdf_2025 is not None else PDF_2025
+        if not Path(pdf_2024).exists() or not Path(pdf_2025).exists():
             raise ValueError(
-                "Fournissez --pdf-2024 et --pdf-2025, "
-                "ou utilisez --skip-extraction si les données existent."
+                f"Fichier PDF introuvable : {pdf_2024 if not Path(pdf_2024).exists() else pdf_2025}\n"
+                "Vérifiez que les fichiers sont bien placés dans data/raw/ ou fournissez le chemin avec --pdf-2024 et --pdf-2025."
             )
-        df_2024 = extraire_lf2024(str(args.pdf_2024), out_dir=PROC_DIR)
-        df_2025 = extraire_lf2025(str(args.pdf_2025), out_dir=PROC_DIR)
+        df_2024 = extraire_lf2024(str(pdf_2024), out_dir=PROC_DIR)
+        df_2025 = extraire_lf2025(str(pdf_2025), out_dir=PROC_DIR)
 
     df_2024["ANNEE"] = 2024
     df_2025["ANNEE"] = 2025
