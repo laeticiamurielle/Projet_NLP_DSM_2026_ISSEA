@@ -83,6 +83,11 @@ LF2025 = dict(
     libelle_col_end    = 42,
 )
 
+
+# ── Noms de fichiers PDF sources ──────────────────────────────────────────────
+PDF_2024 = RAW_DIR / "LOI DES FINANCES 2023-2024.pdf"
+PDF_2025 = RAW_DIR / "LOI DES FINANCES 2024-2025.pdf"
+
 # ── Noms de fichiers de sortie ────────────────────────────────────────────────
 FNAME_2024_RAW       = "lignes_budgetaires_2024"
 FNAME_2025_RAW       = "lignes_budgetaires_2024_2025"
