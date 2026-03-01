@@ -20,6 +20,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 from audit_snd30.config import PILIERS
+from audit_snd30.nlp.embeddings import embed_texts
 
 
 def _distribution(df: pd.DataFrame) -> np.ndarray:
@@ -100,6 +101,26 @@ def calculer_glissement(
         mat  = vect.fit_transform([" ".join(t24), " ".join(t25)])
         cosine_par_pilier[pilier] = round(float(cosine_similarity(mat[0], mat[1])[0][0]), 4)
     resultats["cosine_tfidf"] = cosine_par_pilier
+
+    # ── Similarité cosinus embeddings SentenceTransformer par pilier ────────
+    # Pour chaque pilier : moyenne des embeddings de tous les libellés 2024
+    # et 2025, puis similarité cosinus entre ces deux vecteurs moyens.
+    cosine_embed_par_pilier: dict[str, float | None] = {}
+    for pilier in PILIERS:
+        t24 = df_2024[df_2024["PILIER_SND30"] == pilier]["LIBELLE"].tolist()
+        t25 = df_2025[df_2025["PILIER_SND30"] == pilier]["LIBELLE"].tolist()
+        if not t24 or not t25:
+            cosine_embed_par_pilier[pilier] = None
+            continue
+        emb_24 = embed_texts(t24)
+        emb_25 = embed_texts(t25)
+        v24 = emb_24.mean(axis=0, keepdims=True)
+        v25 = emb_25.mean(axis=0, keepdims=True)
+        cosine_embed_par_pilier[pilier] = round(
+            float(cosine_similarity(v24, v25)[0][0]),
+            4,
+        )
+    resultats["cosine_sentence_transformer"] = cosine_embed_par_pilier
 
     # ── Parts budgétaires et delta ────────────────────────────────────────────
     parts_ae_2024 = _parts_budget(df_2024, ae_col)

@@ -25,6 +25,7 @@ import streamlit as st
 
 from audit_snd30.analysis.alignement import test_alignement
 from audit_snd30.analysis.glissement import calculer_glissement
+from audit_snd30.analysis.embeddings_explorer import construire_embeddings_df
 from audit_snd30.config import (
     CIBLES_SND30,
     COULEUR_2024,
@@ -91,6 +92,7 @@ def sidebar():
         "📡 Baromètre JS",
         "📈 Évolution budgétaire",
         "🔬 Analyse par année",
+        "🧬 Embeddings",
         "📋 Rapport technique",
     ])
     st.sidebar.markdown("---")
@@ -169,6 +171,62 @@ def page_barometre(glissement):
     for pilier, score in cosine.items():
         if score is not None:
             st.metric(pilier, f"{score:.4f}", help="1 = même vocabulaire / 0 = vocabulaire totalement différent")
+
+
+# ── Page 3bis : Embeddings SentenceTransformer ──────────────────────────────
+def page_embeddings(df_2024, df_2025):
+    st.title("🧬 Exploration des Embeddings (SentenceTransformer + UMAP)")
+    st.caption("Projection 2D des libellés budgétaires, colorée par pilier et année")
+
+    max_par_pilier = st.slider(
+        "Nombre maximal de lignes par pilier et par année",
+        min_value=100,
+        max_value=2000,
+        value=500,
+        step=100,
+    )
+
+    df_all = pd.concat([df_2024, df_2025], ignore_index=True)
+
+    with st.spinner("Calcul des embeddings et de l'UMAP 2D..."):
+        df_emb = construire_embeddings_df(
+            df_all,
+            text_col="LIBELLE",
+            label_col="PILIER_SND30",
+            year_col="ANNEE",
+            max_par_pilier=max_par_pilier,
+        )
+
+    col1, col2 = st.columns(2)
+    with col1:
+        fig_pilier = px.scatter(
+            df_emb,
+            x="x",
+            y="y",
+            color="PILIER_SND30",
+            hover_data=["ANNEE", "LIBELLE"],
+            color_discrete_map=COULEURS_PILIERS,
+            title="Espace sémantique par pilier",
+            height=500,
+        )
+        st.plotly_chart(fig_pilier, use_container_width=True)
+
+    with col2:
+        fig_annee = px.scatter(
+            df_emb,
+            x="x",
+            y="y",
+            color="ANNEE",
+            hover_data=["PILIER_SND30", "LIBELLE"],
+            color_discrete_sequence=[COULEUR_2024, COULEUR_2025],
+            title="Espace sémantique par année",
+            height=500,
+        )
+        st.plotly_chart(fig_annee, use_container_width=True)
+
+    st.markdown("---")
+    st.subheader("Aperçu des points (échantillon)")
+    st.dataframe(df_emb.sample(min(200, len(df_emb))).reset_index(drop=True), use_container_width=True)
 
 
 # ── Page 3 : Évolution budgétaire ────────────────────────────────────────────
@@ -285,6 +343,7 @@ def main():
         "📡 Baromètre JS":      lambda: page_barometre(glissement),
         "📈 Évolution budgétaire": lambda: page_evolution(glissement),
         "🔬 Analyse par année": lambda: page_analyse_annee(df_2024, df_2025, annee_sel),
+        "🧬 Embeddings":        lambda: page_embeddings(df_2024, df_2025),
         "📋 Rapport technique": lambda: page_rapport(glissement, alignement),
     }
     dispatch[page]()

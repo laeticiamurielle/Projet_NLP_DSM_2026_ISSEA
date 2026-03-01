@@ -59,10 +59,11 @@ COULEUR_2024: Final[str] = "#1F77B4"
 COULEUR_2025: Final[str] = "#FF7F0E"
 
 # ── Modèles NLP ───────────────────────────────────────────────────────────────
-ZEROSHOT_MODEL: Final[str] = "joeddav/xlm-roberta-large-xnli"
-FINETUNE_MODEL: Final[str] = "camembert-base"
-NLI_TEMPLATE:   Final[str] = "Cette ligne de dépense budgétaire appartient au pilier {}."
-MAX_LEN:        Final[int] = 128
+ZEROSHOT_MODEL:   Final[str] = "joeddav/xlm-roberta-large-xnli"
+FINETUNE_MODEL:   Final[str] = "camembert-base"
+EMBEDDING_MODEL:  Final[str] = "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
+NLI_TEMPLATE:     Final[str] = "Cette ligne de dépense budgétaire appartient au pilier {}."
+MAX_LEN:          Final[int] = 128
 
 # ── Hyperparamètres fine-tuning ───────────────────────────────────────────────
 TRAIN_EPOCHS:      Final[int]   = 8
