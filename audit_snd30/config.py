@@ -59,9 +59,11 @@ COULEUR_2024: Final[str] = "#1F77B4"
 COULEUR_2025: Final[str] = "#FF7F0E"
 
 # ── Modèles NLP ───────────────────────────────────────────────────────────────
-ZEROSHOT_MODEL:   Final[str] = "joeddav/xlm-roberta-large-xnli"
+# Modèle zero-shot léger et multilingue (MNLI/XNLI)
+ZEROSHOT_MODEL:   Final[str] = "MoritzLaurer/multilingual-MiniLMv2-L6-mnli-xnli"
 FINETUNE_MODEL:   Final[str] = "camembert-base"
-EMBEDDING_MODEL:  Final[str] = "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
+# Modèle d'embeddings léger multilingue (SentenceTransformer)
+EMBEDDING_MODEL:  Final[str] = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 NLI_TEMPLATE:     Final[str] = "Cette ligne de dépense budgétaire appartient au pilier {}."
 MAX_LEN:          Final[int] = 128
 

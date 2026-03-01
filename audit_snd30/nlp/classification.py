@@ -78,6 +78,16 @@ def zero_shot(
     ------
     df enrichi avec PILIER_SND30, CONFIANCE, A_VERIFIER, PROB_*
     """
+    # Assure que transformers.pipelines voit bien l'objet torch, même si
+    # l'import optionnel de torch dans transformers a échoué.
+    try:  # garde-fou : en cas d'échec, on laisse transformers gérer l'erreur
+        import transformers.pipelines as _hf_pipes  # type: ignore
+        import torch as _torch  # type: ignore
+        if not hasattr(_hf_pipes, "torch"):
+            _hf_pipes.torch = _torch
+    except Exception:
+        pass
+
     device = 0 if torch.cuda.is_available() else -1
     print(f"[zero_shot] Chargement {ZEROSHOT_MODEL} — {'GPU' if device == 0 else 'CPU'}")
 

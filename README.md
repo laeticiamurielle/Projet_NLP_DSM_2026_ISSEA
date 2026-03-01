@@ -23,18 +23,21 @@ audit_snd30/
 │   │   └── lf_2025.py              #    Extracteur LOI DES FINANCES 2024-2025
 │   │
 │   ├── nlp/                        # 🤖 Étape 2 : Classification NLP
-│   │   └── classification.py       #    Zero-shot · Fine-tuning · Prédiction (CamemBERT)
+│   │   ├── classification.py       #    Zero-shot · Fine-tuning · Prédiction (CamemBERT)
+│   │   └── embeddings.py           #    SentenceTransformer (embeddings pour glissement & UMAP)
 │   │
 │   ├── analysis/                   # 📐 Étapes 3 & 4 : Analyse statistique
-│   │   ├── glissement.py           #    Jensen-Shannon · TF-IDF Cosinus · Δ AE/CP
+│   │   ├── glissement.py           #    Jensen-Shannon · TF-IDF Cosinus · Embeddings · Δ AE/CP
+│   │   ├── embeddings_explorer.py  #    UMAP 2D pour explorer l'espace des embeddings
 │   │   └── alignement.py           #    Test du Chi² vs cibles SND30
 │   │
 │   └── dashboard/                  # 🖥️  Tableau de bord Streamlit
-│       └── app.py                  #    5 pages · Baromètre JS · Rapport technique
+│       └── app.py                  #    6 pages · Baromètre JS · Embeddings · Rapport technique
 │
 ├── scripts/
 │   ├── run_pipeline.py             # 🚀 Pipeline complet (extraction → analyse)
-│   └── run_dashboard.py            # 🚀 Lancement dashboard
+│   ├── run_dashboard.py            # 🚀 Lancement dashboard
+│   └── explore_embeddings.py       # 🚀 Génération CSV UMAP des embeddings (analyse offline)
 │
 ├── tests/
 │   └── test_analysis.py            # ✅ Tests unitaires reproductibles (pytest)
@@ -91,12 +94,17 @@ snd30-extract --lf 2024 --pdf data/raw/LOI DES FINANCES 2023-2024.pdf
 snd30-extract --lf 2025 --pdf data/raw/LOI DES FINANCES 2024-2025.pdf
 ```
 
-### 3. Dashboard interactif
+### 3. Dashboard interactif (avec page Embeddings)
 
 ```bash
 poetry run streamlit run audit_snd30/dashboard/app.py
 ```
 → Ouvrir http://localhost:8501
+
+Dans la barre latérale, la page **🧬 Embeddings** permet de :
+- calculer les embeddings SentenceTransformer (`paraphrase-multilingual-MiniLM-L12-v2`),
+- projeter les points en 2D via UMAP,
+- visualiser l'espace sémantique par pilier SND30 et par année (2024 vs 2025).
 
 ### 4. Tests unitaires
 
@@ -123,7 +131,7 @@ PDF MINFI
    │
    ▼ Étape 2 — Classification NLP (CamemBERT)
 ┌──────────────────────────────────────┐
-│  2a. Zero-shot (XLM-RoBERTa-XNLI)   │
+│  2a. Zero-shot (MiniLM multilingue) │
 │      → Pseudo-labels sans annotation │
 │  2b. Fine-tuning (camembert-base)    │
 │      → Spécialisation vocabulaire    │
@@ -136,6 +144,8 @@ PDF MINFI
 ┌──────────────────────────────────────┐
 │  Jensen-Shannon (distributions)      │
 │  TF-IDF Cosinus (vocabulaire)        │
+│  Embeddings SentenceTransformer +    │
+│    UMAP 2D (glissement sémantique)   │
 │  Δ Part AE/CP (ressources)           │
 └──────────────────────────────────────┘
    │
