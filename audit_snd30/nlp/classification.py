@@ -1,3 +1,6 @@
+
+from __future__ import annotations
+#import torch
 """
 audit_snd30.nlp.classification
 ===============================
@@ -6,19 +9,17 @@ via CamemBERT (zero-shot puis fine-tuning).
 
 Pipeline
 --------
-  1. zero_shot()  → pseudo-labels sans données annotées
-  2. fine_tuner() → spécialisation sur le vocabulaire budgétaire
-  3. predire()    → inférence finale sur les deux LF
+    1. zero_shot()  → pseudo-labels sans données annotées
+    2. fine_tuner() → spécialisation sur le vocabulaire budgétaire
+    3. predire()    → inférence finale sur les deux LF
 """
 
-from __future__ import annotations
-
 import numpy as np
-import torch
 import pandas as pd
 from tqdm import tqdm
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score, accuracy_score, log_loss, classification_report
+
 from transformers import (
     AutoTokenizer,
     AutoModelForSequenceClassification,
@@ -26,8 +27,9 @@ from transformers import (
     Trainer,
     DataCollatorWithPadding,
     EarlyStoppingCallback,
-    pipeline,
+    pipeline
 )
+
 from datasets import Dataset
 
 from audit_snd30.config import (
@@ -35,7 +37,7 @@ from audit_snd30.config import (
     ZEROSHOT_MODEL, FINETUNE_MODEL, NLI_TEMPLATE, MODEL_DIR,
     MAX_LEN, TRAIN_EPOCHS, BATCH_SIZE, LEARNING_RATE,
     WEIGHT_DECAY, WARMUP_RATIO, EARLY_STOP_PAT,
-    SEUIL_ZEROSHOT, SEUIL_PRED, MIN_CONFIANCE_FT,
+    SEUIL_ZEROSHOT, SEUIL_PRED, MIN_CONFIANCE_FT
 )
 
 
