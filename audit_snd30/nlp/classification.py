@@ -92,16 +92,23 @@ def zero_shot(
     print(f"[zero_shot] Chargement {ZEROSHOT_MODEL} — {'GPU' if device == 0 else 'CPU'}")
 
     clf    = pipeline("zero-shot-classification", model=ZEROSHOT_MODEL, device=device)
+    # Texte source harmonisé : on conserve une entrée par ligne du DataFrame,
+    # même si le texte est vide, pour garder les mêmes longueurs.
     textes = df[libelle_col].fillna("").astype(str).tolist()
 
     resultats = []
-    for i in tqdm(range(0, len(textes), 16), desc="Zero-shot"):
-        batch   = textes[i: i + 16]
-        sorties = clf(batch, candidate_labels=PILIERS,
-                      hypothesis_template=NLI_TEMPLATE, multi_label=False)
-        if isinstance(sorties, dict):
-            sorties = [sorties]
-        resultats.extend(sorties)
+    for t in tqdm(textes, desc="Zero-shot"):
+        if not t.strip():
+            # Pour les lignes sans texte exploitable, on affecte un score nul.
+            res = {"labels": PILIERS, "scores": [0.0] * len(PILIERS)}
+        else:
+            res = clf(
+                t,
+                candidate_labels=PILIERS,
+                hypothesis_template=NLI_TEMPLATE,
+                multi_label=False,
+            )
+        resultats.append(res)
 
     df = df.copy()
     df["PILIER_SND30"] = [r["labels"][0]          for r in resultats]

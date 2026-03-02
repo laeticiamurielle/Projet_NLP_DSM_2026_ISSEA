@@ -42,6 +42,7 @@ pillow = ">=12.1.1,<13.0.0"
 pdfplumber = "^0.11.9"
 datasets = "^4.6.1"
 spacy = "^3.8.11"
+streamlit = "^1.54.0"
 
 
 [tool.ruff]

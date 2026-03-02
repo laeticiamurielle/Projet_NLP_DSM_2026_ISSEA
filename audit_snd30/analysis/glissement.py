@@ -90,10 +90,14 @@ def calculer_glissement(
 
     # ── Similarité cosinus TF-IDF par pilier ─────────────────────────────────
     # Pour chaque pilier : compare le corpus de libellés 2024 vs 2025
+    # On force les libellés en chaînes de caractères pour éviter les erreurs
+    # de jointure (valeurs NaN ou numériques).
     cosine_par_pilier: dict[str, float | None] = {}
     for pilier in PILIERS:
-        t24 = df_2024[df_2024["PILIER_SND30"] == pilier]["LIBELLE"].tolist()
-        t25 = df_2025[df_2025["PILIER_SND30"] == pilier]["LIBELLE"].tolist()
+        s24 = df_2024[df_2024["PILIER_SND30"] == pilier]["LIBELLE"]
+        s25 = df_2025[df_2025["PILIER_SND30"] == pilier]["LIBELLE"]
+        t24 = s24.fillna("").astype(str).tolist()
+        t25 = s25.fillna("").astype(str).tolist()
         if not t24 or not t25:
             cosine_par_pilier[pilier] = None
             continue
@@ -107,8 +111,10 @@ def calculer_glissement(
     # et 2025, puis similarité cosinus entre ces deux vecteurs moyens.
     cosine_embed_par_pilier: dict[str, float | None] = {}
     for pilier in PILIERS:
-        t24 = df_2024[df_2024["PILIER_SND30"] == pilier]["LIBELLE"].tolist()
-        t25 = df_2025[df_2025["PILIER_SND30"] == pilier]["LIBELLE"].tolist()
+        s24 = df_2024[df_2024["PILIER_SND30"] == pilier]["LIBELLE"]
+        s25 = df_2025[df_2025["PILIER_SND30"] == pilier]["LIBELLE"]
+        t24 = s24.fillna("").astype(str).tolist()
+        t25 = s25.fillna("").astype(str).tolist()
         if not t24 or not t25:
             cosine_embed_par_pilier[pilier] = None
             continue

@@ -106,6 +106,15 @@ Dans la barre latérale, la page **🧬 Embeddings** permet de :
 - projeter les points en 2D via UMAP,
 - visualiser l'espace sémantique par pilier SND30 et par année (2024 vs 2025).
 
+### 3bis. Fichiers produits par le pipeline
+
+Après exécution de `scripts/run_pipeline.py`, les principaux fichiers créés dans `data/processed/` sont :
+- `lignes_budgetaires_2024.xlsx` : lignes budgétaires extraites de la LF 2024 (CODE, LIBELLE, AE, CP, ANNEE=2024)
+- `lignes_budgetaires_2024_2025.xlsx` : lignes budgétaires extraites de la LF 2025 (CODE, LIBELLE, AE, CP, ANNEE=2025)
+- `df_2024_classifie.xlsx` : lignes 2024 avec `PILIER_SND30`, `CONFIANCE` et probabilités par pilier
+- `df_2025_classifie.xlsx` : lignes 2025 avec `PILIER_SND30`, `CONFIANCE` et probabilités par pilier
+- éventuellement `embeddings_umap.csv` si vous lancez `scripts/explore_embeddings.py` (projection 2D pour analyses externes)
+
 ### 4. Tests unitaires
 
 ```bash

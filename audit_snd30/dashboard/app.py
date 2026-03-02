@@ -60,18 +60,33 @@ def charger_donnees():
         df_2024["ANNEE"] = 2024
         df_2025["ANNEE"] = 2025
     else:
-        raw_24 = PROC_DIR / "lignes_budgetaires_2024.xlsx"
-        raw_25 = PROC_DIR / "lignes_budgetaires_2024_2025.xlsx"
+        # Fichiers bruts produits par la pipeline d'extraction
+        raw_24 = PROC_DIR / "articles_2023_2024.xlsx"
+        raw_25 = PROC_DIR / "articles_2024_2025.xlsx"
+
+        if not raw_24.exists() or not raw_25.exists():
+            raise FileNotFoundError(
+                "Fichiers bruts introuvables. Lance d'abord 'poetry run python scripts/run_pipeline.py' "
+                "ou fournis manuellement les fichiers articles_2023_2024.xlsx et articles_2024_2025.xlsx dans data/processed/."
+            )
+
         df_2024 = pd.read_excel(str(raw_24));  df_2024["ANNEE"] = 2024
         df_2025 = pd.read_excel(str(raw_25));  df_2025["ANNEE"] = 2025
+
+        # Harmonisation du nom de la colonne texte pour la classification
+        for df in (df_2024, df_2025):
+            if "LIBELLE" not in df.columns and "texte_nettoye" in df.columns:
+                df["LIBELLE"] = df["texte_nettoye"]
 
         with st.spinner("Classification CamemBERT en cours..."):
             if MODEL_DIR.exists():
                 df_2024 = predire(df_2024)
                 df_2025 = predire(df_2025)
             else:
-                df_2024 = zero_shot(df_2024)
-                df_2025 = zero_shot(df_2025)
+                # On précise explicitement la colonne texte au cas où
+                # le renommage précédent n'aurait pas eu lieu.
+                df_2024 = zero_shot(df_2024, libelle_col="LIBELLE")
+                df_2025 = zero_shot(df_2025, libelle_col="LIBELLE")
 
         PROC_DIR.mkdir(parents=True, exist_ok=True)
         df_2024.to_excel(str(p24), index=False)

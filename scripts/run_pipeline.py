@@ -19,7 +19,8 @@ from pathlib import Path
 import pandas as pd
 
 from audit_snd30.config import PROC_DIR, MODEL_DIR, FNAME_2024_RAW, FNAME_2025_RAW, PDF_2024, PDF_2025
-from audit_snd30.extraction.articles import articles_nettoyes
+from audit_snd30.extraction.lf_2024 import extraire_lf2024
+from audit_snd30.extraction.lf_2025 import extraire_lf2025
 from audit_snd30.nlp.classification import fine_tuner, predire, zero_shot
 from audit_snd30.analysis.glissement import calculer_glissement
 from audit_snd30.analysis.alignement import test_alignement
@@ -42,18 +43,17 @@ def main():
 
     # ── ÉTAPE 1 : Extraction ────────────────────────────────────────────────
     print(f"\n{sep}")
-    print("  ÉTAPE 1 — Extraction des lignes budgétaires")
+    print("  ÉTAPE 1 — Extraction des lignes budgétaires (LF 2024 & 2025)")
     print(sep)
 
+    # Fichiers Excel produits par les extracteurs lf_2024 / lf_2025
+    p24_lignes = PROC_DIR / f"{FNAME_2024_RAW}.xlsx"
+    p25_lignes = PROC_DIR / f"{FNAME_2025_RAW}.xlsx"
 
-    # Extraction et nettoyage des articles (nouvelle étape)
-    p24_xlsx = PROC_DIR / f"articles_2023_2024.xlsx"
-    p25_xlsx = PROC_DIR / f"articles_2024_2025.xlsx"
-
-    if args.skip_extraction and p24_xlsx.exists() and p25_xlsx.exists():
-        print("[INFO] Extraction ignorée — fichiers existants chargés")
-        df_2024 = pd.read_excel(str(p24_xlsx))
-        df_2025 = pd.read_excel(str(p25_xlsx))
+    if args.skip_extraction and p24_lignes.exists() and p25_lignes.exists():
+        print("[INFO] Extraction ignorée — fichiers de lignes budgétaires existants chargés")
+        df_2024 = pd.read_excel(str(p24_lignes))
+        df_2025 = pd.read_excel(str(p25_lignes))
     else:
         pdf_2024 = args.pdf_2024 if args.pdf_2024 is not None else PDF_2024
         pdf_2025 = args.pdf_2025 if args.pdf_2025 is not None else PDF_2025
@@ -66,18 +66,15 @@ def main():
                 f"Fichier PDF introuvable : {pdf_2024 if not Path(pdf_2024).exists() else pdf_2025}\n"
                 "Vérifiez que les fichiers sont bien placés dans data/raw/ ou fournissez le chemin avec --pdf-2024 et --pdf-2025."
             )
-        # Extraction et nettoyage des articles
-        articles_2024 = articles_nettoyes(pdf_2024)
-        articles_2025 = articles_nettoyes(pdf_2025)
-        df_2024 = pd.DataFrame(articles_2024)
-        df_2025 = pd.DataFrame(articles_2025)
-        df_2024.to_excel(str(p24_xlsx), index=False)
-        df_2025.to_excel(str(p25_xlsx), index=False)
+
+        # Extraction des lignes budgétaires (N°, CODE, LIBELLE, AE, CP)
+        df_2024 = extraire_lf2024(str(pdf_2024))
+        df_2025 = extraire_lf2025(str(pdf_2025))
 
     df_2024["ANNEE"] = 2024
     df_2025["ANNEE"] = 2025
-    print(f"\n  Articles LF 2023-2024 : {len(df_2024)} extraits et nettoyés")
-    print(f"  Articles LF 2024-2025 : {len(df_2025)} extraits et nettoyés")
+    print(f"\n  Lignes budgétaires LF 2023-2024 : {len(df_2024)} extraites")
+    print(f"  Lignes budgétaires LF 2024-2025 : {len(df_2025)} extraites")
 
     # ── ÉTAPE 2 : Classification NLP ────────────────────────────────────────
     print(f"\n{sep}")
@@ -91,13 +88,19 @@ def main():
 
     if not args.skip_finetuning:
         print("\n[2b] Fine-tuning CamemBERT sur LF 2024...")
-        scores = fine_tuner(df_2024_zs)
-        print(f"\n  F1 macro : {scores['f1_macro']}")
-        print(f"  Log-Loss : {scores['log_loss']}")
+        try:
+            scores = fine_tuner(df_2024_zs)
+            print(f"\n  F1 macro : {scores['f1_macro']}")
+            print(f"  Log-Loss : {scores['log_loss']}")
 
-        print("\n[2c] Prédiction finale...")
-        df_2024_final = predire(df_2024)
-        df_2025_final = predire(df_2025)
+            print("\n[2c] Prédiction finale avec le modèle fine-tuné...")
+            df_2024_final = predire(df_2024)
+            df_2025_final = predire(df_2025)
+        except Exception as e:  # Dataset trop petit ou autre erreur de fine-tuning
+            print("[AVERTISSEMENT] Fine-tuning CamemBERT impossible (" + str(e) + ")")
+            print("[AVERTISSEMENT] Utilisation des prédictions zero-shot uniquement.")
+            df_2024_final = df_2024_zs
+            df_2025_final = df_2025_zs
     else:
         print("[INFO] Fine-tuning ignoré — utilisation des prédictions zero-shot")
         df_2024_final = df_2024_zs
